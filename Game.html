@@ -1,0 +1,125 @@
+ <html>
+  <head>
+   <title>
+     Dewski Dash
+   </title>
+  </head>
+  <script>
+   var canvas;
+   var context;
+   var x = 0;
+   var y = 300;
+   var energy = 100;
+    var lefty = false;
+    var righty = false;
+
+    // images
+    var playerImage = new Image(browserTileSize, browserTileSize);
+        playerImage.src = "/image/SandTile.png";
+    
+   function init()
+    {
+	canvas = Document.getElementById(“kanvas”);
+ 	context  = canvas.getContext(“2d");
+  document.addEventListener('keydown', onKeyDown());
+      document.addEventListener('keyup', onKeyUp());
+    }
+    function fall()
+      {
+        if(y < 350)
+        {
+          y += 3;
+        }
+      }
+   function tick()
+    {
+	context.fillStyle = ‘turquoise’;
+	context.fillRect(0,0,1000,1000);
+context.fillStyle = ‘lime’;
+	context.fillRect(0,350,1000,1000);
+  fall();
+      move();
+    }
+    function move()
+      {
+        if(lefty)
+        {
+          x -= 2;
+        }
+        if(righty)
+        {
+          x += 2;
+        }
+          
+      }
+  function drawDrink(char type)
+   { 
+    Image curImg;
+    switch(type)
+    {
+     case ‘d’:
+	curImg = dewImg;
+     break;
+     case ‘b’:
+curImg = bajaImg;
+     break;
+     case ‘w’:
+	curImg = waterImg;
+     break;
+    }
+   }
+    function collectDrink(char type)
+      {
+        switch(type)
+    {
+     case ‘d’:
+    	  energy += 15;
+     break;
+     case ‘b’:
+        energy += 30
+     break;
+     case ‘w’:
+      	energy -= 5;
+     break;
+    }
+        if(energy > 100)
+        {
+          energy = 100;
+      }
+    function onKeyDown()
+      {
+        switch(event.keyCode)
+          {
+            case 65:
+              lefty = true;
+              break;
+            case 68:
+              righty = true;
+              break;
+            
+          }
+      }
+        function onKeyUp()
+          {
+            switch(event.keyCode)
+              {
+              case 65:
+              lefty = false;
+              break;
+            case 68:
+              righty = false;
+              break;
+                case 32:
+                  jumpy();
+                  break;
+              }
+          }
+        function jumpy()
+        {
+          y -= 70;
+        }
+  </script>
+ <body>
+   <canvas width=”500” height = “500” id=”kanvas”>yea its bad but im tired of coding so good enough</canvas>
+ </body>
+ </html>
