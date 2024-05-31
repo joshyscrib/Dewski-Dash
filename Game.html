@@ -1,10 +1,12 @@
- <html>
+
+<html>
   <head>
    <title>
      Dewski Dash
    </title>
   </head>
   <script>
+// lol i did all the work
    var canvas;
    var context;
    var x = 0;
@@ -14,8 +16,8 @@
     var righty = false;
 
     // images
-    var playerImage = new Image(browserTileSize, browserTileSize);
-        playerImage.src = "/image/SandTile.png";
+//    var playerImage = new Image(browserTileSize, browserTileSize);
+//        playerImage.src = "/image/SandTile.png";
     
    function init()
     {
@@ -39,6 +41,10 @@ context.fillStyle = ‘lime’;
 	context.fillRect(0,350,1000,1000);
   fall();
       move();
+	    if(energy <= 0)
+	    {
+		window.location.reload();
+	    }
     }
     function move()
       {
@@ -50,7 +56,15 @@ context.fillStyle = ‘lime’;
         {
           x += 2;
         }
-          
+          if(x < 0)
+	  {
+		x = 0;
+	  }
+	      if(x >= 1000)
+	  {
+		x = 1000;
+	  }
+	      
       }
   function drawDrink(char type)
    { 
@@ -116,10 +130,13 @@ curImg = bajaImg;
           }
         function jumpy()
         {
-          y -= 70;
+	  if(y >= 347)
+	  {
+       	   y -= 65;
+	  }
         }
   </script>
  <body>
-   <canvas width=”500” height = “500” id=”kanvas”>yea its bad but im tired of coding so good enough</canvas>
+   <canvas width=”1000” height = “1000” id=”kanvas”>yea its bad but im tired of coding so good enough</canvas>
  </body>
  </html>
