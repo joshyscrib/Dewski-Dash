@@ -21,8 +21,8 @@
     
    function init()
     {
-	canvas = Document.getElementById(“kanvas”);
- 	context  = canvas.getContext(“2d");
+	canvas = Document.getElementById("kanvas");
+ 	context  = canvas.getContext("2d");
   document.addEventListener('keydown', onKeyDown());
       document.addEventListener('keyup', onKeyUp());
     }
@@ -35,9 +35,9 @@
       }
    function tick()
     {
-	context.fillStyle = ‘turquoise’;
+	context.fillStyle = 'turquoise';
 	context.fillRect(0,0,1000,1000);
-context.fillStyle = ‘lime’;
+context.fillStyle = 'lime';
 	context.fillRect(0,350,1000,1000);
   fall();
       move();
@@ -66,23 +66,23 @@ context.fillStyle = ‘lime’;
 	  }
 	      
       }
-  function drawDrink(char type)
+  function drawDrink( ype)
    { 
-    Image curImg;
+    var curImg
     switch(type)
     {
-     case ‘d’:
+     case 'c':
 	curImg = dewImg;
      break;
-     case ‘b’:
+     case 'b':
 curImg = bajaImg;
      break;
-     case ‘w’:
+     case 'w':
 	curImg = waterImg;
      break;
     }
    }
-    function collectDrink(char type)
+    function collectDrink(type)
       {
         switch(type)
     {
