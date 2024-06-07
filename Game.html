@@ -1,142 +1,309 @@
-
 <html>
-  <head>
-   <title>
-     Dewski Dash
-   </title>
-  </head>
-  <script>
-   var canvas;
-   var context;
-   var x = 0;
-   var y = 300;
-   var energy = 100;
-    var lefty = false;
-    var righty = false;
 
-    // images
-//    var playerImage = new Image(browserTileSize, browserTileSize);
-//        playerImage.src = "/image/SandTile.png";
-    
-   function init()
-    {
-	canvas = Document.getElementById("kanvas");
- 	context  = canvas.getContext("2d");
-  document.addEventListener('keydown', onKeyDown());
-      document.addEventListener('keyup', onKeyUp());
+<head>
+  <title>
+    Dewski Dash
+  </title>
+</head>
+<script>
+  var canvas;
+  var context;
+  var x = 0;
+  var y = 500;
+  var dewsPickedUp = 0;
+  var energy = 200;
+  var direction = "right";
+  var width = 64;
+  var height = 128;
+  var ticks = 0;
+  var doAjumpy = false;
+
+  var drinkX = -1;
+  var drinkY = -1;
+  var drinkType1 = 'd';
+  var drinkType2 = 'd';
+  var drink2X = -1;
+  var drink2Y = -1;
+
+  // images
+  var playerImage = new Image();
+  playerImage.src = "Player.png";
+
+  var playerLImage = new Image();
+  playerLImage.src = "PlayerL.png";
+
+  var fireWallImage = new Image();
+  fireWallImage.src = "Firewall.png";
+
+  var dewskiImage = new Image();
+  dewskiImage.src = "Dewski.png";
+
+  var bajaImage = new Image();
+  bajaImage.src = "Baja.png";
+
+  var waterImage = new Image();
+  waterImage.src = "Water.png";
+
+
+  function onKeyDown() {
+    switch (event.keyCode) {
+      case 65:
+        direction = "left";
+        break;
+      case 68:
+        direction = "right";
+        break;
+      case 32:
+        jumpy();
+        break;
+
     }
-    function fall()
-      {
-        if(y < 350)
-        {
-          y += 3;
-        }
+  }
+  function init() {
+    canvas = document.getElementById("kanvas");
+    context = canvas.getContext("2d");
+    document.addEventListener('keydown', onKeyDown);
+    setInterval(tick, 20);
+    spawnDew();
+    setTimeout(spawnDew, 1);
+
+  }
+  function spawnDew() {
+    var spawnX = Math.floor((Math.random() * 1300) + 1);
+    var spawnY = Math.floor((Math.random() * 170) + 1) + 300;
+    if (drinkX == -1) {
+      drinkX = spawnX;
+      drinkY = spawnY;
+      var r = Math.floor((Math.random() * 6) + 1);
+      switch (r) {
+        case 0:
+          drinkType1 = 'd';
+          break;
+        case 1:
+          drinkType1 = 'b';
+          break;
+        case 2:
+          drinkType1 = 'w';
+          break;
+        case 3:
+          drinkType1 = 'd';
+          break;
+        case 4:
+          drinkType1 = 'b';
+          break;
+        case 5:
+          drinkType1 = 'd';
+          break;
+        case 6:
+          drinkType1 = 'w';
+          break;
       }
-   function tick()
+      if(Math.abs(drinkX - drink2X) <= 200)
     {
-	context.fillStyle = 'turquoise';
-	context.fillRect(0,0,1000,1000);
-context.fillStyle = 'lime';
-	context.fillRect(0,350,1000,1000);
-  fall();
-      move();
-	    if(energy <= 0)
-	    {
-		window.location.reload();
-	    }
+      drinkX = -1;
+      spawnDew();
+    } 
+      return;
+
     }
-    function move()
-      {
-        if(lefty)
-        {
-          x -= 2;
-        }
-        if(righty)
-        {
-          x += 2;
-        }
-          if(x < 0)
-	  {
-		x = 0;
-	  }
-	      if(x >= 1000)
-	  {
-		x = 1000;
-	  }
-	      
+    if (drink2X == -1) {
+      drink2X = spawnX;
+      drink2Y = spawnY;
+      var r = Math.floor((Math.random() * 6) + 1);
+      switch (r) {
+        case 0:
+          drinkType2 = 'd';
+          break;
+        case 1:
+          drinkType2 = 'b';
+          break;
+        case 2:
+          drinkType2 = 'w';
+          break;
+        case 3:
+          drinkType2 = 'd';
+          break;
+        case 4:
+          drinkType2 = 'b';
+          break;
+        case 5:
+          drinkType2 = 'd';
+          break;
+        case 6:
+          drinkType2 = 'w';
+          break;
       }
-  function drawDrink( ype)
-   { 
-    var curImg
-    switch(type)
+    }
+    if(Math.abs(drinkX - drink2X) <= 200)
     {
-     case 'c':
-	curImg = dewImg;
-     break;
-     case 'b':
-curImg = bajaImg;
-     break;
-     case 'w':
-	curImg = waterImg;
-     break;
+      drinkX = -1;
+      spawnDew();
+    } 
+  }
+  function fall() {
+    if (doAjumpy) {
+      y -= 4;
     }
-   }
-    function collectDrink(type)
-      {
-        switch(type)
-    {
-     case 'd':
-    	  energy += 15;
-     break;
-     case 'b':
-        energy += 30
-     break;
-     case 'w':
-      	energy -= 5;
-     break;
+    else if (y < 700 - height - 3) {
+      y += 3;
     }
-        if(energy > 100)
-        {
-          energy = 100;
-      }
-    function onKeyDown()
+  }
+  function tick() {
+
+    if (ticks % 3 == 0) {
+      energy--;
+    }
+    if (y <= 419) {
+      doAjumpy = false;
+    }
+
+    ticks++;
+    // sky
+    context.fillStyle = 'turquoise';
+    context.fillRect(0, 0, 1500, 1000);
+    // ground
+    context.fillStyle = 'lime';
+    context.fillRect(0, 700, 1500, 1000);
+    // dewskies
+    drawDrink(drinkType1, false);
+    drawDrink(drinkType2, true);
+    // player
+    if (direction == "right") {
+      context.drawImage(playerImage, x - 35, y - 15, 150 + (dewsPickedUp * 10), 170);
+    }
+    else {
+      context.drawImage(playerLImage, x - 35, y - 15, 150 + (dewsPickedUp * 10), 170);
+    }
+    // energy bar
+    context.fillStyle = 'gray';
+    context.fillRect(20, 720, 204 * 2, 14 * 2);
+    context.fillStyle = 'red';
+    context.fillRect(22, 722, energy * 2, 12 * 2);
+    fall();
+    move();
+    if (energy <= 0) {
+      window.location.reload();
+    }
+    if (energy > 200) {
+      energy = 200
+    }
+
+
+    if(
+      (x >= drinkX && x <= drinkX + 90 && y >= drinkY && y <= drinkY + 120) ||
+      (x + width >= drinkX && x + width <= drinkX + 90 && y >= drinkY && y <= drinkY + 120) ||
+      (x >= drinkX && x <= drinkX + 90 && y + height >= drinkY && y + height <= drinkY + 120) ||
+      (x + width >= drinkX && x + width <= drinkX + 90 && y + height >= drinkY && y + height <= drinkY + 120)
+      )
       {
-        switch(event.keyCode)
-          {
-            case 65:
-              lefty = true;
-              break;
-            case 68:
-              righty = true;
-              break;
-            
-          }
+        collectDrink(1);
       }
-        function onKeyUp()
-          {
-            switch(event.keyCode)
-              {
-              case 65:
-              lefty = false;
-              break;
-            case 68:
-              righty = false;
-              break;
-                case 32:
-                  jumpy();
-                  break;
-              }
-          }
-        function jumpy()
-        {
-	  if(y >= 347)
-	  {
-       	   y -= 65;
-	  }
+      if(
+      (x >= drink2X && x <= drink2X + 90 && y >= drink2Y && y <= drink2Y + 120) ||
+      (x + width >= drink2X && x + width <= drink2X + 90 && y >= drink2Y && y <= drink2Y + 120) ||
+      (x >= drink2X && x <= drink2X + 90 && y + height >= drink2Y && y + height <= drink2Y + 120) ||
+      (x + width >= drink2X && x + width <= drink2X + 90 && y + height >= drink2Y && y + height <= drink2Y + 120)
+      )
+      {
+        collectDrink(2);
+      }
+
+
+  }
+  function move() {
+    if (direction == "left") {
+      x -= 3;
+    }
+    if (direction == "right") {
+      x += 3;
+    }
+    if (x < 0) {
+      x = 0;
+    }
+    if (x >= 1500 - width) {
+      x = 1500 - width;
+    }
+
+  }
+  function drawDrink(type, second) {
+    switch (type) {
+      case 'd':
+        if (second) {
+          context.drawImage(dewskiImage, drink2X, drink2Y, 90, 120);
         }
+        else {
+          context.drawImage(dewskiImage, drinkX, drinkY, 90, 120);
+        }
+        break;
+      case 'b':
+        if (second) {
+          context.drawImage(bajaImage, drink2X, drink2Y, 90, 100);
+        }
+        else {
+          context.drawImage(bajaImage, drinkX, drinkY, 90, 100);
+        }
+        break;
+      case 'w':
+        if (second) {
+          context.drawImage(waterImage, drink2X, drink2Y, 90, 120);
+        }
+        else {
+          context.drawImage(waterImage, drinkX, drinkY, 90, 120);
+        }
+        break;
+
+
+    }
+
+  }
+  function collectDrink(which) {
+    var type = ''; 
+    dewsPickedUp++;
+    if (which == 1) {
+      type = drinkType1;
+      drinkX = -1;
+      if(drinkType2 == 'w')
+      {
+        drink2X = -1;
       }
-  </script>
- <body>
-   <canvas width="1000" height="1000"></canvas>
- </body>
- </html>
+    }
+    if (which == 2) {
+      type = drinkType2;
+      drink2X = -1;
+      if(drinkType1 == 'w')
+      {
+        drinkX = -1;
+      }
+    }
+    switch (type) {
+      case 'd':
+        energy += 75;
+        break;
+      case 'b':
+        energy += 120
+        break;
+      case 'w':
+        energy -= 15;
+        break;
+    }
+    if (energy > 100) {
+      energy = 100;
+    }
+    spawnDew();
+  }
+  function jumpy() {
+    if (y >= 696 - height) {
+      doAjumpy = true;
+    }
+
+  }
+
+
+
+</script>
+
+<body onload="init()">
+  <canvas width="1500" height="1000" id="kanvas"></canvas>
+</body>
+
+</html>
